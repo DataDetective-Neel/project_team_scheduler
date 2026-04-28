@@ -41,13 +41,14 @@ def is_valid_assignment(team, slot, student_schedule, faculty_schedule):
 
 #main scheduler
 
-def schedule_teams(teams, faculty):
-    student_schedule = {}
-    faculty_schedule = {}
+def schedule_teams(teams, faculty, existing_student_schedule, existing_faculty_schedule):
+    # Copy existing schedules (VERY IMPORTANT)
+    student_schedule = {k: v[:] for k, v in existing_student_schedule.items()}
+    faculty_schedule = {k: v[:] for k, v in existing_faculty_schedule.items()}
+
     final_schedule = []
     unscheduled = []
 
-    # sort by number of students (important)
     teams.sort(key=lambda t: len(t.students), reverse=True)
 
     slots = generate_slots(
@@ -64,13 +65,15 @@ def schedule_teams(teams, faculty):
             if is_valid_assignment(team, slot, student_schedule, faculty_schedule):
                 start, end = slot
 
-                final_schedule.append((team.team_id, start, end))
+                final_schedule.append((team.team_id, faculty.faculty_id, start, end))
 
-                # update schedules
+                # Update schedules
                 faculty_schedule.setdefault(team.faculty_id, []).append((start, end))
 
                 for student in team.students:
-                    student_schedule.setdefault(student.id, []).append((start, end))
+                    sid = student.id
+                    student_schedule.setdefault(sid, []).append((start, end))
+                    student_schedule[sid].sort()
 
                 assigned = True
                 break
@@ -78,4 +81,4 @@ def schedule_teams(teams, faculty):
         if not assigned:
             unscheduled.append(team.team_id)
 
-    return final_schedule, unscheduled
+    return final_schedule, unscheduled, student_schedule, faculty_schedule
