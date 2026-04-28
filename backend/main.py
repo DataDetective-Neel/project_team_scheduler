@@ -26,7 +26,7 @@ class ScheduleRequest(BaseModel):
     buffer: int
     batch: str
     teams: List[TeamInput]
-
+    save: bool = False  
 
 @app.post("/schedule")
 def create_schedule(request: ScheduleRequest):
@@ -39,6 +39,10 @@ def create_schedule(request: ScheduleRequest):
         student_schedule_db[batch] = {}
     if batch not in faculty_schedule_db:
         faculty_schedule_db[batch] = {}
+
+    # 👇 COPY schedules (important for preview)
+    temp_student = {k: v[:] for k, v in student_schedule_db[batch].items()}
+    temp_faculty = {k: v[:] for k, v in faculty_schedule_db[batch].items()}
 
     faculty = Faculty(
         request.faculty_id,
@@ -56,15 +60,17 @@ def create_schedule(request: ScheduleRequest):
     schedule, unscheduled, updated_student, updated_faculty = schedule_teams(
         teams,
         faculty,
-        student_schedule_db[batch],
-        faculty_schedule_db[batch]
+        temp_student,
+        temp_faculty
     )
 
-    # Save back
-    student_schedule_db[batch] = updated_student
-    faculty_schedule_db[batch] = updated_faculty
+    # 👇 Only save if confirmed
+    if request.save:
+        student_schedule_db[batch] = updated_student
+        faculty_schedule_db[batch] = updated_faculty
 
     return {
+        "mode": "saved" if request.save else "preview",
         "schedule": [
             {
                 "team": t[0],
