@@ -13,32 +13,41 @@ function TeamForm({ teams, setTeams }) {
 
   return (
     <div className="card">
-      <h3>Teams</h3>
+  <h3>Teams</h3>
 
-      {teams.map((team, i) => (
-        <div key={i}>
-          <input
-            placeholder="Team ID"
-            value={team.team_id}
-            onChange={(e) => updateTeam(i, "team_id", e.target.value)}
-          />
+  {teams.length === 0 && (
+    <p style={{ color: "#999" }}>
+      No teams added yet. Click below to add a team.
+    </p>
+  )}
 
-          <input
-            placeholder="Students (comma separated)"
-            value={team.students}
-            onChange={(e) => updateTeam(i, "students", e.target.value)}
-          />
+  {teams.map((team, i) => (
+  <div className="input-group" key={i}>
+    
+    <input
+      placeholder="Team ID"
+      value={team.team_id}
+      onChange={(e) => updateTeam(i, "team_id", e.target.value)}
+    />
 
-          <input
-            type="number"
-            value={team.duration}
-            onChange={(e) => updateTeam(i, "duration", e.target.value)}
-          />
-        </div>
-      ))}
+    <input
+      placeholder="Students (comma separated)"
+      value={team.students}
+      onChange={(e) => updateTeam(i, "students", e.target.value)}
+    />
 
-      <button onClick={addTeam}>+ Add Team</button>
-    </div>
+    <input
+      type="number"
+      placeholder="Duration (min)"
+      value={team.duration}
+      onChange={(e) => updateTeam(i, "duration", e.target.value)}
+    />
+
+  </div>
+))}
+
+  <button onClick={addTeam}>+ Add Team</button>
+</div>
   );
 }
 
