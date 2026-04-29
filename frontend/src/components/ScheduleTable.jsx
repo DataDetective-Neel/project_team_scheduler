@@ -3,9 +3,9 @@ function ScheduleTable({ data }) {
 
   return (
     <div className="card">
-      <h3>Schedule ({data.mode})</h3>
+      <div className="section-title">Step 3 — Preview</div>
 
-      <table>
+      <table style={{ width: "100%", marginTop: "10px" }}>
         <thead>
           <tr>
             <th>Team</th>

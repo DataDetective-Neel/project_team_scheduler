@@ -40,7 +40,9 @@ function Dashboard() {
       <FacultyForm faculty={faculty} setFaculty={setFaculty} />
       <TeamForm teams={teams} setTeams={setTeams} />
 
-      <button onClick={handlePreview}>Preview Schedule</button>
+      <div className="center">
+        <button onClick={handlePreview}>Preview Schedule</button>
+      </div>
 
       <ScheduleTable data={result} />
     </div>
