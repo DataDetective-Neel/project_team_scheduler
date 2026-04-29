@@ -45,6 +45,10 @@ input {
   border: 1px solid #e5e5e5;
   background: #ffffff;
   transition: 0.2s;
+  color: #2e2e2e;
+}
+input::placeholder {
+  color: #aaa;
 }
 
 input:focus {
@@ -76,4 +80,15 @@ button:hover {
   text-align: center;
   color: #888;
   margin-top: 10px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+label {
+  font-size: 13px;
+  color: #6b8f8b;
+  font-weight: 500;
 }

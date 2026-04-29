@@ -1,6 +1,15 @@
 function TeamForm({ teams, setTeams }) {
+
   const addTeam = () => {
-    setTeams([...teams, { team_id: "", students: "", duration: 30 }]);
+    setTeams([
+      ...teams,
+      { team_id: "", students: "", duration: 30 }
+    ]);
+  };
+
+  const removeTeam = (index) => {
+    const updated = teams.filter((_, i) => i !== index);
+    setTeams(updated);
   };
 
   const updateTeam = (index, field, value) => {
@@ -22,24 +31,48 @@ function TeamForm({ teams, setTeams }) {
 
       {teams.map((team, i) => (
         <div className="input-group" key={i}>
-          <input
-            placeholder="Team ID"
-            value={team.team_id}
-            onChange={(e) => updateTeam(i, "team_id", e.target.value)}
-          />
 
-          <input
-            placeholder="Students (comma separated)"
-            value={team.students}
-            onChange={(e) => updateTeam(i, "students", e.target.value)}
-          />
+          <div className="field">
+            <label>Team ID</label>
+            <input
+              value={team.team_id}
+              onChange={(e) =>
+                updateTeam(i, "team_id", e.target.value)
+              }
+            />
+          </div>
 
-          <input
-            type="number"
-            placeholder="Duration (min)"
-            value={team.duration}
-            onChange={(e) => updateTeam(i, "duration", e.target.value)}
-          />
+          <div className="field">
+            <label>Students</label>
+            <input
+              placeholder="comma separated"
+              value={team.students}
+              onChange={(e) =>
+                updateTeam(i, "students", e.target.value)
+              }
+            />
+          </div>
+
+          <div className="field">
+            <label>Duration (minutes)</label>
+            <input
+              type="number"
+              value={team.duration}
+              onChange={(e) =>
+                updateTeam(i, "duration", Number(e.target.value))
+              }
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "end" }}>
+            <button
+              style={{ backgroundColor: "#e07a7a" }}
+              onClick={() => removeTeam(i)}
+            >
+              Remove
+            </button>
+          </div>
+
         </div>
       ))}
 
