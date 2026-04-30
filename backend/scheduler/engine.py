@@ -68,7 +68,7 @@ def schedule_teams(teams, faculty, existing_student_schedule, existing_faculty_s
             if is_valid_assignment(team, slot, student_schedule, faculty_schedule):
                 start, end = slot
 
-                final_schedule.append((team.team_id, team.enrollment_number, faculty.faculty_id, start, end))
+                final_schedule.append((team.team_id, faculty.faculty_id, start, end))
 
                 # Update schedules
                 faculty_schedule.setdefault(team.faculty_id, []).append((start, end))

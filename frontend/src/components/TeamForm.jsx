@@ -4,8 +4,29 @@ import * as XLSX from "xlsx";
 function TeamForm({ teams, setTeams }) {
   const [uploadError, setUploadError] = useState("");
 
+  const createStudentRow = () => ({ enrollment_id: "", name: "", topic: "" });
+
+  const normalizeStudentRows = (rows = []) => {
+    const normalized = rows
+      .map((row) => ({
+        enrollment_id: row?.enrollment_id || "",
+        name: row?.name || "",
+        topic: row?.topic || "",
+      }))
+      .filter((row) => row.enrollment_id || row.name || row.topic);
+
+    return normalized.length > 0 ? normalized : [createStudentRow()];
+  };
+
   const addTeam = () => {
-    setTeams([...teams, { team_id: "", students: "", duration: 30, enrollment_number: "" }]);
+    setTeams([
+      ...teams,
+      {
+        team_id: "",
+        student_rows: [createStudentRow()],
+        duration: 30,
+      },
+    ]);
   };
 
   const removeTeam = (index) => {
@@ -16,6 +37,27 @@ function TeamForm({ teams, setTeams }) {
   const updateTeam = (index, field, value) => {
     const updated = [...teams];
     updated[index][field] = value;
+    setTeams(updated);
+  };
+
+  const updateStudentRow = (teamIndex, rowIndex, field, value) => {
+    const updated = [...teams];
+    const rows = [...(updated[teamIndex].student_rows || [])];
+    rows[rowIndex] = { ...rows[rowIndex], [field]: value };
+    updated[teamIndex].student_rows = rows;
+    setTeams(updated);
+  };
+
+  const addStudentRow = (teamIndex) => {
+    const updated = [...teams];
+    updated[teamIndex].student_rows = [...(updated[teamIndex].student_rows || []), createStudentRow()];
+    setTeams(updated);
+  };
+
+  const removeStudentRow = (teamIndex, rowIndex) => {
+    const updated = [...teams];
+    const rows = [...(updated[teamIndex].student_rows || [])].filter((_, i) => i !== rowIndex);
+    updated[teamIndex].student_rows = rows.length > 0 ? rows : [createStudentRow()];
     setTeams(updated);
   };
 
@@ -51,9 +93,12 @@ function TeamForm({ teams, setTeams }) {
         }
         const parsedTeams = data.map((row) => ({
           team_id: row["Team ID"] || row["team_id"] || "",
-          students: row["Students"] || row["students"] || "",
+          student_rows: normalizeStudentRows(
+            String(row["Students"] || row["students"] || "")
+              .split(",")
+              .map((studentId) => ({ enrollment_id: studentId.trim(), name: "", topic: "" }))
+          ),
           duration: Number(row["Duration"] || row["duration"] || 30),
-          enrollment_number: row["Enrollment Number"] || row["enrollment_number"] || "",
         }));
         setTeams([...teams, ...parsedTeams]);
         e.target.value = "";
@@ -71,7 +116,6 @@ function TeamForm({ teams, setTeams }) {
     const teamIdIndex = findColumnIndex(headers, ["team_id", "team id", "teamid"]);
     const studentsIndex = findColumnIndex(headers, ["students", "student"]);
     const durationIndex = findColumnIndex(headers, ["duration"]);
-    const enrollmentIndex = findColumnIndex(headers, ["enrollment_number", "enrollment number", "enrollmentnumber"]);
     if (teamIdIndex === -1 || studentsIndex === -1) {
       throw new Error("CSV must have 'Team ID' and 'Students' columns");
     }
@@ -81,9 +125,13 @@ function TeamForm({ teams, setTeams }) {
       if (row.some((cell) => cell.trim())) {
         parsedTeams.push({
           team_id: row[teamIdIndex]?.trim() || "",
-          students: row[studentsIndex]?.trim() || "",
+          student_rows: normalizeStudentRows(
+            row[studentsIndex]
+              ?.trim()
+              .split(",")
+              .map((studentId) => ({ enrollment_id: studentId.trim(), name: "", topic: "" })) || []
+          ),
           duration: Number(row[durationIndex]?.trim() || 30),
-          enrollment_number: row[enrollmentIndex]?.trim() || "",
         });
       }
     }
@@ -129,7 +177,7 @@ function TeamForm({ teams, setTeams }) {
           className="file-input"
         />
         <p className="upload-hint">
-          Expected columns: Team ID, Students, Duration (optional), Enrollment Number (required)
+          Expected columns: Team ID, Students, Duration (optional)
         </p>
       </div>
       {teams.length === 0 && (
@@ -143,13 +191,59 @@ function TeamForm({ teams, setTeams }) {
             <label>Team ID</label>
             <input value={team.team_id} onChange={(e) => updateTeam(i, "team_id", e.target.value)} />
           </div>
-          <div className="field">
-            <label>Enrollment Number</label>
-            <input value={team.enrollment_number || ""} onChange={(e) => updateTeam(i, "enrollment_number", e.target.value)} />
-          </div>
-          <div className="field">
-            <label>Students (comma separated)</label>
-            <input value={team.students} onChange={(e) => updateTeam(i, "students", e.target.value)} />
+          <div className="field" style={{ gridColumn: "1 / -1" }}>
+            <label>Students</label>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "8px" }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid #ddd" }}>Enrollment ID</th>
+                    <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid #ddd" }}>Name</th>
+                    <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid #ddd" }}>Topic</th>
+                    <th style={{ width: "110px", padding: "8px", borderBottom: "1px solid #ddd" }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(team.student_rows || [createStudentRow()]).map((row, rowIndex) => (
+                    <tr key={rowIndex}>
+                      <td style={{ padding: "8px" }}>
+                        <input
+                          value={row.enrollment_id}
+                          onChange={(e) => updateStudentRow(i, rowIndex, "enrollment_id", e.target.value)}
+                          placeholder="EN123456"
+                        />
+                      </td>
+                      <td style={{ padding: "8px" }}>
+                        <input
+                          value={row.name}
+                          onChange={(e) => updateStudentRow(i, rowIndex, "name", e.target.value)}
+                          placeholder="Student name"
+                        />
+                      </td>
+                      <td style={{ padding: "8px" }}>
+                        <input
+                          value={row.topic}
+                          onChange={(e) => updateStudentRow(i, rowIndex, "topic", e.target.value)}
+                          placeholder="Optional topic"
+                        />
+                      </td>
+                      <td style={{ padding: "8px", whiteSpace: "nowrap" }}>
+                        <button
+                          type="button"
+                          style={{ marginRight: "8px" }}
+                          onClick={() => removeStudentRow(i, rowIndex)}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <button type="button" onClick={() => addStudentRow(i)} style={{ marginTop: "8px" }}>
+              + Add Student
+            </button>
           </div>
           <div className="field">
             <label>Duration (minutes)</label>

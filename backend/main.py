@@ -17,7 +17,6 @@ class TeamInput(BaseModel):
     team_id: str
     students: List[str]
     duration: int
-    enrollment_number: str = ""
 
 
 class ScheduleRequest(BaseModel):
@@ -67,7 +66,7 @@ def create_schedule(request: ScheduleRequest):
     )
 
     teams = [
-        Team(t.team_id, t.students, request.faculty_id, t.duration, t.enrollment_number)
+        Team(t.team_id, t.students, request.faculty_id, t.duration)
         for t in request.teams
     ]
 
@@ -88,10 +87,9 @@ def create_schedule(request: ScheduleRequest):
         "schedule": [
             {
                 "team": t[0],
-                "enrollment_number": t[1],
-                "faculty": t[2],
-                "start": t[3],
-                "end": t[4]
+                "faculty": t[1],
+                "start": t[2],
+                "end": t[3]
             }
             for t in schedule
         ],

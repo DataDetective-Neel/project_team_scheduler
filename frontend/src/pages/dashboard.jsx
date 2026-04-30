@@ -59,12 +59,13 @@ function Dashboard() {
         setError(`Team ${i + 1}: Team ID is required`);
         return false;
       }
-      if (!team.students.trim()) {
-        setError(`Team ${i + 1}: Students list is required`);
+      if (!team.student_rows || team.student_rows.length === 0) {
+        setError(`Team ${i + 1}: At least one student is required`);
         return false;
       }
-      if (!team.enrollment_number?.trim()) {
-        setError(`Team ${i + 1}: Enrollment Number is required`);
+      const invalidStudent = team.student_rows.find((student) => !student.enrollment_id?.trim());
+      if (invalidStudent) {
+        setError(`Team ${i + 1}: Every student needs an Enrollment ID`);
         return false;
       }
       if (!team.duration || team.duration <= 0) {
@@ -82,9 +83,8 @@ function Dashboard() {
     setLoading(true);
     const formattedTeams = teams.map((t) => ({
       team_id: t.team_id,
-      students: t.students.split(",").map((s) => s.trim()),
+      students: (t.student_rows || []).map((student) => student.enrollment_id.trim()),
       duration: Number(t.duration),
-      enrollment_number: t.enrollment_number || "",
     }));
 
     const data = {
@@ -109,9 +109,8 @@ function Dashboard() {
     setLoading(true);
     const formattedTeams = teams.map((t) => ({
       team_id: t.team_id,
-      students: t.students.split(",").map((s) => s.trim()),
+      students: (t.student_rows || []).map((student) => student.enrollment_id.trim()),
       duration: Number(t.duration),
-      enrollment_number: t.enrollment_number || "",
     }));
 
     const data = {
