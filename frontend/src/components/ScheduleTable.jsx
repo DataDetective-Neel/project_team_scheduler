@@ -1,11 +1,18 @@
+import { convertToCSV } from "../api/csvExport";
+
 function ScheduleTable({ data }) {
   if (!data) return null;
+
+  const handleExport = () => {
+    const timestamp = new Date().toISOString().split("T")[0];
+    convertToCSV(data, `schedule_${timestamp}.csv`);
+  };
 
   return (
     <div className="card">
       <div className="section-title">Step 3 — Preview</div>
 
-      <table style={{ width: "100%", borderCollapse: "collapse",marginTop: "10px" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "10px" }}>
         <thead>
           <tr>
             <th>Team</th>
@@ -26,6 +33,12 @@ function ScheduleTable({ data }) {
           ))}
         </tbody>
       </table>
+
+      <div className="center">
+        <button onClick={handleExport} className="export-button">
+          Export CSV
+        </button>
+      </div>
     </div>
   );
 }

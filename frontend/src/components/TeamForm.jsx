@@ -43,9 +43,8 @@ function TeamForm({ teams, setTeams }) {
           </div>
 
           <div className="field">
-            <label>Students</label>
+            <label>Students (comma separated)</label>
             <input
-              placeholder="comma separated"
               value={team.students}
               onChange={(e) =>
                 updateTeam(i, "students", e.target.value)

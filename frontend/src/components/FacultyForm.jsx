@@ -54,7 +54,6 @@ function FacultyForm({ faculty, setFaculty }) {
         <div className="field">
           <label>Batch</label>
           <input
-            placeholder="e.g. 2nd_year"
             value={faculty.batch || ""}
             onChange={(e) =>
               setFaculty({ ...faculty, batch: e.target.value })
