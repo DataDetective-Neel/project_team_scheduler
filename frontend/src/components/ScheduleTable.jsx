@@ -1,4 +1,5 @@
 import { convertToCSV } from "../api/csvExport";
+import { convertToPDF } from "../api/pdfExport";
 
 function ScheduleTable({ data }) {
   if (!data) return null;
@@ -6,6 +7,11 @@ function ScheduleTable({ data }) {
   const handleExport = () => {
     const timestamp = new Date().toISOString().split("T")[0];
     convertToCSV(data, `schedule_${timestamp}.csv`);
+  };
+
+  const handlePdfExport = () => {
+    const timestamp = new Date().toISOString().split("T")[0];
+    convertToPDF(data, `schedule_${timestamp}.pdf`);
   };
 
   return (
@@ -40,7 +46,21 @@ function ScheduleTable({ data }) {
         <button onClick={handleExport} className="export-button">
           Export CSV
         </button>
+        <button onClick={handlePdfExport} className="export-button" style={{ marginLeft: "10px" }}>
+          Export PDF
+        </button>
       </div>
+
+      {data.unscheduled && data.unscheduled.length > 0 && (
+        <div className="card" style={{ marginTop: "16px" }}>
+          <div className="section-title">Unscheduled Teams</div>
+          <ul>
+            {data.unscheduled.map((teamId) => (
+              <li key={teamId}>{teamId}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

@@ -63,6 +63,10 @@ function Dashboard() {
         setError(`Team ${i + 1}: Students list is required`);
         return false;
       }
+      if (!team.enrollment_number?.trim()) {
+        setError(`Team ${i + 1}: Enrollment Number is required`);
+        return false;
+      }
       if (!team.duration || team.duration <= 0) {
         setError(`Team ${i + 1}: Duration must be greater than 0`);
         return false;
@@ -80,6 +84,7 @@ function Dashboard() {
       team_id: t.team_id,
       students: t.students.split(",").map((s) => s.trim()),
       duration: Number(t.duration),
+      enrollment_number: t.enrollment_number || "",
     }));
 
     const data = {
@@ -106,6 +111,7 @@ function Dashboard() {
       team_id: t.team_id,
       students: t.students.split(",").map((s) => s.trim()),
       duration: Number(t.duration),
+      enrollment_number: t.enrollment_number || "",
     }));
 
     const data = {

@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
 from datetime import datetime
@@ -17,6 +17,7 @@ class TeamInput(BaseModel):
     team_id: str
     students: List[str]
     duration: int
+    enrollment_number: str = ""
 
 
 class ScheduleRequest(BaseModel):
@@ -31,6 +32,19 @@ class ScheduleRequest(BaseModel):
 @app.post("/schedule")
 def create_schedule(request: ScheduleRequest):
     global student_schedule_db, faculty_schedule_db
+
+    if request.start_time >= request.end_time:
+        raise HTTPException(status_code=400, detail="start_time must be earlier than end_time")
+
+    if request.buffer < 0:
+        raise HTTPException(status_code=400, detail="buffer must be zero or greater")
+
+    if not request.teams:
+        return {
+            "mode": "saved" if request.save else "preview",
+            "schedule": [],
+            "unscheduled": []
+        }
 
     batch = request.batch
 
@@ -53,7 +67,7 @@ def create_schedule(request: ScheduleRequest):
     )
 
     teams = [
-        Team(t.team_id, t.students, request.faculty_id, t.duration)
+        Team(t.team_id, t.students, request.faculty_id, t.duration, t.enrollment_number)
         for t in request.teams
     ]
 
@@ -74,9 +88,10 @@ def create_schedule(request: ScheduleRequest):
         "schedule": [
             {
                 "team": t[0],
-                "faculty": t[1],
-                "start": t[2],
-                "end": t[3]
+                "enrollment_number": t[1],
+                "faculty": t[2],
+                "start": t[3],
+                "end": t[4]
             }
             for t in schedule
         ],

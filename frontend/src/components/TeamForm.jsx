@@ -129,7 +129,7 @@ function TeamForm({ teams, setTeams }) {
           className="file-input"
         />
         <p className="upload-hint">
-          Expected columns: Team ID, Students, Duration (optional), Enrollment Number (optional)
+          Expected columns: Team ID, Students, Duration (optional), Enrollment Number (required)
         </p>
       </div>
       {teams.length === 0 && (
