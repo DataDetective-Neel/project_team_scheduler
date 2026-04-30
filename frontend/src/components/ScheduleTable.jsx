@@ -5,7 +5,7 @@ function ScheduleTable({ data }) {
     <div className="card">
       <div className="section-title">Step 3 — Preview</div>
 
-      <table style={{ width: "100%", marginTop: "10px" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse",marginTop: "10px" }}>
         <thead>
           <tr>
             <th>Team</th>

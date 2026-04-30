@@ -92,3 +92,12 @@ label {
   color: #6b8f8b;
   font-weight: 500;
 }
+table th, table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+table th {
+  color: #6b8f8b;
+}
