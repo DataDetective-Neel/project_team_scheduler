@@ -6,7 +6,7 @@ export const convertToCSV = (data, filename = "schedule.csv") => {
   const schedule = data.schedule;
   
   // Create CSV headers
-  const headers = ["Team", "Faculty", "Start Time", "End Time"];
+  const headers = ["Team", "Enrollment Number", "Faculty", "Start Time", "End Time"];
   
   // Prepare rows
   const rows = [];
@@ -14,6 +14,7 @@ export const convertToCSV = (data, filename = "schedule.csv") => {
   schedule.forEach((item) => {
     rows.push([
       item.team || "",
+      item.enrollment_number || "",
       item.faculty || "",
       item.start ? new Date(item.start).toLocaleString() : "",
       item.end ? new Date(item.end).toLocaleString() : "",

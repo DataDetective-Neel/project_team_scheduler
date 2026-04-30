@@ -16,6 +16,7 @@ function ScheduleTable({ data }) {
         <thead>
           <tr>
             <th>Team</th>
+            <th>Enrollment Number</th>
             <th>Faculty</th>
             <th>Start</th>
             <th>End</th>
@@ -26,6 +27,7 @@ function ScheduleTable({ data }) {
           {data.schedule.map((item, i) => (
             <tr key={i}>
               <td>{item.team}</td>
+              <td>{item.enrollment_number || "-"}</td>
               <td>{item.faculty}</td>
               <td>{new Date(item.start).toLocaleTimeString()}</td>
               <td>{new Date(item.end).toLocaleTimeString()}</td>
