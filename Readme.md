@@ -2,7 +2,7 @@
 
 Project Team Scheduler is a full-stack scheduling app for assigning evaluation slots to student teams while respecting faculty availability, faculty buffers, and student conflict rules.
 
-The frontend is a React/Vite app for logging in, entering faculty and team data, previewing a schedule, and confirming it for save. The backend is a FastAPI service that generates schedules from the submitted constraints.
+The frontend is a React/Vite app for logging in, entering faculty and team data, previewing a schedule, and confirming it for saving. The backend is a FastAPI service that generates schedules from the submitted constraints.
 
 ## Features
 
@@ -41,7 +41,7 @@ cd backend
 python -m venv .venv
 .venv\Scripts\activate
 pip install fastapi uvicorn pydantic
-uvicorn main:app --reload
+uvicorn main: app --reload
 ```
 
 The API will run at `http://127.0.0.1:8000`.
@@ -72,9 +72,9 @@ The backend scheduler uses these rules:
 
 - Teams are sorted by student count, largest first.
 - Slots are generated from the faculty time window using the team duration and faculty buffer.
-- A team cannot be scheduled if it overlaps another evaluation for the same faculty.
+- A team cannot be scheduled if it overlaps with another evaluation for the same faculty.
 - A student cannot have overlapping evaluations.
-- A student must keep at least a 30 minute gap between evaluations.
+- A student must keep at least a 30-minute gap between evaluations.
 - Unassigned teams are returned in an `unscheduled` list.
 
 ## API
@@ -110,6 +110,6 @@ Response fields:
 ## Notes
 
 - The backend currently stores schedules in memory only. Restarting the server clears saved data.
-- Student enrollment IDs are normalized to uppercase by the scheduler.
+- Student enrollment IDs are normalised to uppercase by the scheduler.
 - If you add backend dependency files later, update the setup section to use them directly.
 - The Enrollment Number is the primary key for finding any clash.
