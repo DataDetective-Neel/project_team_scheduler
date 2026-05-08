@@ -112,3 +112,4 @@ Response fields:
 - The backend currently stores schedules in memory only. Restarting the server clears saved data.
 - Student enrollment IDs are normalized to uppercase by the scheduler.
 - If you add backend dependency files later, update the setup section to use them directly.
+- The Enrollment Number is the primary key for finding any clash.
