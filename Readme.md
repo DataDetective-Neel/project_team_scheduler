@@ -70,7 +70,7 @@ The app will run on the Vite dev server, usually at `http://localhost:5173`.
 
 The backend scheduler uses these rules:
 
-- Teams are sorted by student count, largest first.
+- Student count, largest first sort teams.
 - Slots are generated from the faculty time window using the team duration and faculty buffer.
 - A team cannot be scheduled if it overlaps with another evaluation for the same faculty.
 - A student cannot have overlapping evaluations.
