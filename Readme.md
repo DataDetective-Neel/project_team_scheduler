@@ -113,3 +113,4 @@ Response fields:
 - Student enrollment IDs are normalised to uppercase by the scheduler.
 - If you add backend dependency files later, update the setup section to use them directly.
 - The Enrollment Number is the primary key for finding any clash.
+- The Name can also be used for small groups
